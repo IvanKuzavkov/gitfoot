@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using gitfoot.ViewModels;
 using gitfoot.Models;
 
-namespace gitfoot
+namespace gitfoot.ViewModels
 {
     public class ItemViewModel : BaseViewModel, INotifyPropertyChanged
     {

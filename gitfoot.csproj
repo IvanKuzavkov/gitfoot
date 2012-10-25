@@ -48,9 +48,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Funq">
+      <HintPath>Lib\Funq.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Microsoft.Phone.Reactive" />
+    <Reference Include="System.Observable" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -68,6 +73,8 @@
     </Compile>
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -81,10 +88,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <DesignData Include="SampleData\MainViewModelSampleData.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </DesignData>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AppManifest.xml" />
@@ -99,6 +102,20 @@
     </Content>
     <Resource Include="PanoramaBackground.png" />
     <Content Include="SplashScreenImage.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BitTorrent.WP7.Extensions\BitTorrent.WP7.Extensions.csproj">
+      <Project>{AC63FAA7-4726-4080-8987-22BC1E0D6B1A}</Project>
+      <Name>BitTorrent.WP7.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="BitTorrent.WP7.Services.Shell\BitTorrent.WP7.Services.Shell.csproj">
+      <Project>{917E3CB6-AF6F-45D1-AA85-9163FA4416F9}</Project>
+      <Name>BitTorrent.WP7.Services.Shell</Name>
+    </ProjectReference>
+    <ProjectReference Include="BitTorrent.WP7.Services\BitTorrent.WP7.Services.csproj">
+      <Project>{74BACDF4-450A-48CF-B830-80DBB7CAE28B}</Project>
+      <Name>BitTorrent.WP7.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />

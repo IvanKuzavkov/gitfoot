@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using Microsoft.Phone.Reactive;
 
+using gitfoot.Service;
 
 namespace gitfoot
 {
@@ -77,6 +79,24 @@ namespace gitfoot
             this.Items.Add(new ItemViewModel() { LineOne = "runtime fourteen", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent" });
             this.Items.Add(new ItemViewModel() { LineOne = "runtime fifteen", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat" });
             this.Items.Add(new ItemViewModel() { LineOne = "runtime sixteen", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum" });
+
+            {
+                GithubApiService service = new GithubApiService();
+                service.UseCredentials("ivan-p", "githubPaSs1");
+
+                service.CreateAuthorization().
+                    Subscribe((r) =>
+                    {
+                        string token = ((Models.AuthorizationResponse)r).token;
+                    }
+                    , (e) => 
+                    {
+                        string message = e.Message;
+                    }
+                );
+
+                
+            }
 
             this.IsDataLoaded = true;
         }

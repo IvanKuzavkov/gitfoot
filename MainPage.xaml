@@ -19,9 +19,9 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
  
         <!--Panorama control-->
-        <controls:Panorama Title="my application">
+        <controls:Panorama Title="gitfoot">
             <controls:Panorama.Background>
-                <ImageBrush ImageSource="PanoramaBackground.png"/>
+                <ImageBrush ImageSource="{Binding PanoramaImage}" Opacity="0.55"/>
             </controls:Panorama.Background>
  
             <!--Panorama item one-->

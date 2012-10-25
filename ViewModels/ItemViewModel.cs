@@ -10,70 +10,52 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using gitfoot.ViewModels;
+using gitfoot.Models;
 
 namespace gitfoot
 {
-    public class ItemViewModel : INotifyPropertyChanged
+    public class ItemViewModel : BaseViewModel, INotifyPropertyChanged
     {
-        private string _lineOne;
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
-        /// </summary>
-        /// <returns></returns>
-        public string LineOne
+        public ItemViewModel()
+        {
+        }
+
+        public ItemViewModel(BaseModel model)
+            : base(model.sha)
+        {
+        }
+
+        private string _name;
+        public string Name
         {
             get
             {
-                return _lineOne;
+                return _name;
             }
             set
             {
-                if (value != _lineOne)
+                if (value != _name)
                 {
-                    _lineOne = value;
+                    _name = value;
                     NotifyPropertyChanged("LineOne");
                 }
             }
         }
 
-        private string _lineTwo;
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
-        /// </summary>
-        /// <returns></returns>
-        public string LineTwo
+        private string _image;
+        public string Image
         {
             get
             {
-                return _lineTwo;
+                return _image;
             }
             set
             {
-                if (value != _lineTwo)
+                if (value != _image)
                 {
-                    _lineTwo = value;
+                    _image = value;
                     NotifyPropertyChanged("LineTwo");
-                }
-            }
-        }
-
-        private string _lineThree;
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
-        /// </summary>
-        /// <returns></returns>
-        public string LineThree
-        {
-            get
-            {
-                return _lineThree;
-            }
-            set
-            {
-                if (value != _lineThree)
-                {
-                    _lineThree = value;
-                    NotifyPropertyChanged("LineThree");
                 }
             }
         }

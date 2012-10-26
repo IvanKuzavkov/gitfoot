@@ -81,6 +81,7 @@ namespace gitfoot.ViewModels
             {
                 NotificationController.SplashScreen.IsVisible = true;
                 GHService.UseCredentials(User, Password);
+                NavigationService.Navigate(AppPages.MainPage);
             });
         }
 

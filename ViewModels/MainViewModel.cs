@@ -28,7 +28,7 @@ namespace gitfoot.ViewModels
     {
         INavigationService _navigationService;
         GithubApiService GHService { get; set; }
-        private INotificationController NotificationController { get; set; }
+        public INotificationController NotificationController { get; set; }
 
         private Uri imageUri;
         public Uri ImageUri
@@ -124,15 +124,14 @@ namespace gitfoot.ViewModels
         {
             NotificationController = notController;
             GHService = service;
-            GHService.UseCredentials("ivan-p", "githubPaSs1");
-
+ 
             this.NewsItems = new ObservableCollection<ItemViewModel>();
 
-            User = Observable.Return(new User());
+//            User = Observable.Return(new User());
 
-            GHService.GetUser(User);
+//            GHService.GetUser(User);
 
-            User.Subscribe(user =>
+/*            User.Subscribe(user =>
                 {
                     user.Organizations.ForEach(org => GHService.GetReposForOrganization(org, RepositItems));
                 });
@@ -143,7 +142,16 @@ namespace gitfoot.ViewModels
             IssuesItems = new ObservableCollection<ItemViewModel>();
             GHService.GetIssues(IssuesItems);
 
-            _navigationService = navigationService;
+            _navigationService = navigationService;*/
+        }
+
+        public void Init()
+        {
+            RepositItems = new ObservableCollection<ItemViewModel>();
+            GHService.GetUserRepos(RepositItems);
+
+            IssuesItems = new ObservableCollection<ItemViewModel>();
+            GHService.GetIssues(IssuesItems);
         }
 
         private IObservable<User> _user;
@@ -167,24 +175,6 @@ namespace gitfoot.ViewModels
         
         public ObservableCollection<ItemViewModel> RepositItems { get; private set; }
         public ObservableCollection<ItemViewModel> IssuesItems { get; private set; }
-
-        private string _sampleProperty = "Sample Runtime Property Value";
-
-        public string SampleProperty
-        {
-            get
-            {
-                return _sampleProperty;
-            }
-            set
-            {
-                if (value != _sampleProperty)
-                {
-                    _sampleProperty = value;
-                    NotifyPropertyChanged("SampleProperty");
-                }
-            }
-        }
 
         public bool IsDataLoaded
         {

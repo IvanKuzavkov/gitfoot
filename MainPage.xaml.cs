@@ -12,11 +12,18 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using gitfoot.ViewModels;
 using Microsoft.Phone.Shell;
+using System.Windows.Navigation;
 
 namespace gitfoot
 {
     public partial class MainPage : PhoneApplicationPage
     {
+        MainViewModel _viewModel;
+        private MainViewModel ViewModel
+        {
+            get { return _viewModel ?? (_viewModel = (MainViewModel)this.DataContext); }
+        }
+
         // Constructor
         public MainPage()
         {
@@ -43,6 +50,18 @@ namespace gitfoot
             {
                 viewModel.LoadData();
             }
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            ViewModel.NotificationController.SplashScreen.IsVisible = false;
+            if (e.NavigationMode == NavigationMode.New && e.IsNavigationInitiator)
+            {
+                while (NavigationService.RemoveBackEntry() != null)
+                { }
+            }
+
+            ViewModel.Init();
         }
     }
 }

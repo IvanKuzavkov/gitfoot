@@ -12,6 +12,9 @@ using Microsoft.Phone.Reactive;
 using BitTorrent.WP7.Extensions;
 using gitfoot.Models;
 using System.Collections.Generic;
+using RestSharp;
+using System.Collections.ObjectModel;
+using gitfoot.ViewModels;
 
 namespace gitfoot.Service
 {
@@ -22,75 +25,82 @@ namespace gitfoot.Service
         protected string User { get; set; }
         protected string Password { get; set; }
 
+        static protected RestClient restClient;
+
         public GithubApiService(string serviceUrl = "https://api.github.com")
         {
             ServiceApiUrl = serviceUrl;
+
+            restClient = new RestClient(ServiceApiUrl);
         }
 
-
-        private HttpWebRequest GetRequest(string endpoint)
+        public void UseCredentials(string username, string password)
         {
-            var request = (HttpWebRequest)WebRequest.Create(string.Format("{0}/{1}", ServiceApiUrl, endpoint));
+            User = username;
+            Password = password;
 
-            if (request == null)
-                return null;
-
-            return request;
+            restClient.Authenticator = new HttpBasicAuthenticator(User, Password);
         }
 
 
-        public IObservable<AuthorizationResponse> CreateAuthorization()
+        public void GetUser(IObservable<User> user)
         {
-            string restRequest = string.Format("{0}/{1}", ServiceApiUrl, "authorizations");
+            var request = new RestRequest("user", Method.GET);
 
-            AuthorizationRequest req = new AuthorizationRequest();
-            req.scopes = new List<string>();
-            req.scopes.Add("repo");
+            restClient.ExecuteAsync<User>(request, (response) =>
+                {
+                    user = Observable.Return<User>(response.Data);
 
-            return this.Post<AuthorizationRequest, AuthorizationResponse>(restRequest, req);
+                    GithubApiService.GetOrgs(response.Data);
+                });
+
         }
 
-        public void UseCredentials(string user, string pwd)
+        public void GetUserRepos(ObservableCollection<ItemViewModel> repos)
         {
-            User = user;
-            Password = pwd;
+            var request = new RestRequest("user/repos", Method.GET);
+
+            restClient.ExecuteAsync<List<Repository>>(request, response =>
+                {
+                    response.Data.ForEach(repo => repos.Add(new ItemViewModel(repo)));
+                });
         }
 
-        public IObservable<T> Get<T>(string endpoint)
+        public void GetIssues(ObservableCollection<ItemViewModel> issues)
         {
-            return GetRequest(endpoint).GetJson<T>();
+            var request = new RestRequest("issues", Method.GET);
+
+            restClient.ExecuteAsync<List<Issue>>(request, response =>
+                {
+//                    string s = response.Content;
+                    response.Data.ForEach(issue => issues.Add(new ItemViewModel(issue)));
+                });
         }
 
-        public IObservable<Unit> Post<T>(string endpoint, T obj)
+        static public void GetOrgs(User user)
         {
-            var request = GetRequest(endpoint);
-            request.Credentials = new NetworkCredential(User, Password);
+            var request = new RestRequest("user/orgs", Method.GET);
 
-            return request.PostJson(obj);
+            restClient.ExecuteAsync<List<Organization>>(request, response =>
+                {
+                    user.Organizations = response.Data;
+                });
         }
 
-        public IObservable<V> Post<T, V>(string endpoint, T obj)
+        public void GetReposForOrganization(Organization org, ObservableCollection<ItemViewModel> repos)
+        {
+            var request = new RestRequest(string.Format("orgs/{0}/repos", org.login), Method.GET);
+
+            restClient.ExecuteAsync<List<Repository>>(request, response =>
+                {
+                    response.Data.ForEach(repo => repos.Add(new ItemViewModel(repo)));
+                });
+        }
+
+        public void GetIssuesForRepos(IEnumerable<Repository> repos)
         {
 
-            //if (obj is System.Windows.Media.Imaging.BitmapImage)
-            //    return GetRequest(endpoint)
-            //            .PostImage<V>(obj as System.Windows.Media.Imaging.BitmapImage);
-            //else
-            //    return GetRequest(endpoint).PostJson<T, V>(obj);
-
-
-            return GetRequest(endpoint).PostJson<T, V>(obj);
-        }
-        public IObservable<Unit> Delete(string endpoint)
-        {
-            return GetRequest(endpoint).DeleteJson();
         }
 
-        public IObservable<TResult> Put<TSource, TResult>(string endpoint, TSource obj)
-        {
-            return GetRequest(endpoint).PutJson<TSource, TResult>(obj);
-        }
-
- 
     }
 }

@@ -36,6 +36,12 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
 
  //           Container.Register<ICacheManager>(IsolatedStorageCacheManager.Instance);
 
+            Container.Register<AppViewModel>(c => new AppViewModel(
+                                           c.Resolve<INavigationService>(),
+                                           c.Resolve<gitfoot.Service.GithubApiService>(),
+                                           c.Resolve<INotificationController>()))
+                                           .ReusedWithin(ReuseScope.Container);
+
 
             Container.Register<MainViewModel>(c => new MainViewModel(
                                            c.Resolve<INavigationService>(),

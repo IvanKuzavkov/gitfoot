@@ -25,7 +25,7 @@ namespace gitfoot.Service
         protected string User { get; set; }
         protected string Password { get; set; }
 
-        protected RestClient restClient;
+        static protected RestClient restClient;
 
         public GithubApiService(string serviceUrl = "https://api.github.com")
         {
@@ -50,6 +50,8 @@ namespace gitfoot.Service
             restClient.ExecuteAsync<User>(request, (response) =>
                 {
                     user = Observable.Return<User>(response.Data);
+
+                    GithubApiService.GetOrgs(response.Data);
                 });
 
         }
@@ -61,8 +63,43 @@ namespace gitfoot.Service
             restClient.ExecuteAsync<List<Repository>>(request, response =>
                 {
                     response.Data.ForEach(repo => repos.Add(new ItemViewModel(repo)));
- //                   repos = new ObservableCollection<Repository>(response.Data);
                 });
+        }
+
+        public void GetIssues(ObservableCollection<ItemViewModel> issues)
+        {
+            var request = new RestRequest("issues", Method.GET);
+
+            restClient.ExecuteAsync<List<Issue>>(request, response =>
+                {
+//                    string s = response.Content;
+                    response.Data.ForEach(issue => issues.Add(new ItemViewModel(issue)));
+                });
+        }
+
+        static public void GetOrgs(User user)
+        {
+            var request = new RestRequest("user/orgs", Method.GET);
+
+            restClient.ExecuteAsync<List<Organization>>(request, response =>
+                {
+                    user.Organizations = response.Data;
+                });
+        }
+
+        public void GetReposForOrganization(Organization org, ObservableCollection<ItemViewModel> repos)
+        {
+            var request = new RestRequest(string.Format("orgs/{0}/repos", org.login), Method.GET);
+
+            restClient.ExecuteAsync<List<Repository>>(request, response =>
+                {
+                    response.Data.ForEach(repo => repos.Add(new ItemViewModel(repo)));
+                });
+        }
+
+        public void GetIssuesForRepos(IEnumerable<Repository> repos)
+        {
+
         }
     }
 }

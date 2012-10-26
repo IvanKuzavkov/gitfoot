@@ -21,6 +21,10 @@ namespace gitfoot.Models
         public string name { get; set; }
         public string email { get; set; }
         public int public_repos { get; set; }
+
+        protected List<Organization> _organizations = new List<Organization>();
+        public List<Organization> Organizations { get { return _organizations; } set { _organizations = value; } } 
+
     }
 
     public class Repository : BaseModel
@@ -31,5 +35,20 @@ namespace gitfoot.Models
         public string full_name { get; set; }
         public string description { get; set; }
         public int open_issues { get; set; }
+    }
+
+    public class Issue : BaseModel
+    {
+        public string url { get; set; }
+        public int number { get; set; }
+        public string title { get; set; }
+        public int comments { get; set; }
+    }
+
+    public class Organization : BaseModel
+    {
+        public string url { get; set; }
+        public string login { get; set; }
+        public string avatar_url { get; set; }
     }
 }

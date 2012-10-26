@@ -39,10 +39,10 @@ namespace gitfoot
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             var viewModel = DataContext as MainViewModel;
-//            if (!viewModel.IsDataLoaded)
-            //{
-            //    viewModel.LoadData();
-            //}
+            if (!viewModel.IsDataLoaded)
+            {
+                viewModel.LoadData();
+            }
         }
     }
 }

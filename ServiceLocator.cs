@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using Funq;
 using BitTorrent.WP7.Services;
 using gitfoot.ViewModels;
+using gitfoot;
 
 namespace BitTorrent.WP7.TorrentRemote.App.Services
 {
@@ -29,13 +30,23 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
         private void Init()
         {
             Container.Register<INavigationService>(_ => new ApplicationNavigationService(((gitfoot.App)Application.Current).RootFrame));
+            Container.Register<gitfoot.Service.GithubApiService>(_ => new gitfoot.Service.GithubApiService());
+            Container.Register<INotificationController>(DefaultNotificationController.Instance);
 
 
  //           Container.Register<ICacheManager>(IsolatedStorageCacheManager.Instance);
 
 
             Container.Register<MainViewModel>(c => new MainViewModel(
-                                           c.Resolve<INavigationService>()))
+                                           c.Resolve<INavigationService>(),
+                                           c.Resolve<gitfoot.Service.GithubApiService>(),
+                                           c.Resolve<INotificationController>()))
+                                           .ReusedWithin(ReuseScope.Container);
+
+            Container.Register<LoginViewModel>(c => new LoginViewModel(
+                                           c.Resolve<INavigationService>(),
+                                           c.Resolve<gitfoot.Service.GithubApiService>(),
+                                           c.Resolve<INotificationController>()))
                                            .ReusedWithin(ReuseScope.Container);
 
         }

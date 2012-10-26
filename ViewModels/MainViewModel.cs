@@ -27,6 +27,9 @@ namespace gitfoot.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         INavigationService _navigationService;
+        GithubApiService GHService { get; set; }
+        private INotificationController NotificationController { get; set; }
+
         private Uri imageUri;
         public Uri ImageUri
         {
@@ -117,27 +120,28 @@ namespace gitfoot.ViewModels
             this.NewsItems = new ObservableCollection<ItemViewModel>();
         }
 
-        public MainViewModel(INavigationService navigationService)
+        public MainViewModel(INavigationService navigationService, GithubApiService service, INotificationController notController)
         {
-            GithubApiService service = new GithubApiService();
-            service.UseCredentials("ivan-p", "githubPaSs1");
+            NotificationController = notController;
+            GHService = service;
+            GHService.UseCredentials("ivan-p", "githubPaSs1");
 
             this.NewsItems = new ObservableCollection<ItemViewModel>();
 
             User = Observable.Return(new User());
 
-            service.GetUser(User);
+            GHService.GetUser(User);
 
             User.Subscribe(user =>
                 {
-                    user.Organizations.ForEach(org => service.GetReposForOrganization(org, RepositItems));
+                    user.Organizations.ForEach(org => GHService.GetReposForOrganization(org, RepositItems));
                 });
 
             RepositItems = new ObservableCollection<ItemViewModel>();
-            service.GetUserRepos(RepositItems);
+            GHService.GetUserRepos(RepositItems);
 
             IssuesItems = new ObservableCollection<ItemViewModel>();
-            service.GetIssues(IssuesItems);
+            GHService.GetIssues(IssuesItems);
 
             _navigationService = navigationService;
         }

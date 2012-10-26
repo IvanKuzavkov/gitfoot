@@ -1,7 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Studio 2010 Express for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gitfoot", "gitfoot.csproj", "{A9C61A65-2CA4-4B52-A1A4-C7D80868B3F0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CFE2E9A6-012E-4FE8-942B-1F0000969AED} = {CFE2E9A6-012E-4FE8-942B-1F0000969AED}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitTorrent.WP7.Extensions", "BitTorrent.WP7.Extensions\BitTorrent.WP7.Extensions.csproj", "{AC63FAA7-4726-4080-8987-22BC1E0D6B1A}"
 EndProject

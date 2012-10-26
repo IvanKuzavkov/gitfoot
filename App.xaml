@@ -4,11 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:viewmodels="clr-namespace:BitTorrent.WP7.TorrentRemote.App.Services">
 
     <!--Application Resources-->
     <Application.Resources>
+        <viewmodels:ViewModelLocator x:Key="ViewModelLocator"></viewmodels:ViewModelLocator>
     </Application.Resources>
+
 
     <Application.ApplicationLifetimeObjects>
         <!--Required object that handles lifetime events for the application-->

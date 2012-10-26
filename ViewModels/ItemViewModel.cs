@@ -10,10 +10,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using gitfoot.ViewModels;
+using gitfoot.Models;
 
-namespace gitfoot
+namespace gitfoot.ViewModels
 {
-    public class ItemViewModel : INotifyPropertyChanged
+    public class ItemViewModel : BaseViewModel, INotifyPropertyChanged
     {
         public ItemViewModel()
         {
@@ -31,20 +33,16 @@ namespace gitfoot
             Name = repo.name;
         }
 
-        private string _lineTwo;
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
-        /// </summary>
-        /// <returns></returns>
-        public string LineTwo
+        private string _name;
+        public string Name
         {
             get
             {
-                return _lineTwo;
+                return _name;
             }
             set
             {
-                if (value != _lineTwo)
+                if (value != _name)
                 {
                     _name = value;
                     NotifyPropertyChanged("Name");
@@ -52,20 +50,16 @@ namespace gitfoot
             }
         }
 
-        private string _lineThree;
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
-        /// </summary>
-        /// <returns></returns>
-        public string LineThree
+        private string _image;
+        public string Image
         {
             get
             {
-                return _lineThree;
+                return _image;
             }
             set
             {
-                if (value != _lineThree)
+                if (value != _image)
                 {
                     _image = value;
                     NotifyPropertyChanged("Image");

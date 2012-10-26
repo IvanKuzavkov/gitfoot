@@ -34,8 +34,7 @@ namespace BitTorrent.WP7.Extensions
                         response =>
                         {
                             using (var responseStream = response.GetResponseStream())
-                            {
-                                
+                            {                                
                                 return JsonConvert.DeserializeObject<T>(new StreamReader(responseStream).ReadToEnd());
                             }
                         });

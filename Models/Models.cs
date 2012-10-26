@@ -13,12 +13,15 @@ using System.Collections.Generic;
 
 namespace gitfoot.Models
 {
-    public class User
+    public class BaseOwner : BaseModel
     {
-        public int id { get; set; }
-        public string login { get; set; }
+        public string url { get; set; }
         public string avatar_url { get; set; }
-        public string name { get; set; }
+        public string login { get; set; }
+    }
+
+    public class User : BaseOwner
+    {
         public string email { get; set; }
         public int public_repos { get; set; }
 
@@ -29,12 +32,11 @@ namespace gitfoot.Models
 
     public class Repository : BaseModel
     {
-//        public int id { get; set; }
         public string url { get; set; }
-//        public string name { get; set; }
         public string full_name { get; set; }
         public string description { get; set; }
         public int open_issues { get; set; }
+        public BaseOwner owner { get; set; }
     }
 
     public class Issue : BaseModel
@@ -45,10 +47,7 @@ namespace gitfoot.Models
         public int comments { get; set; }
     }
 
-    public class Organization : BaseModel
+    public class Organization : BaseOwner
     {
-        public string url { get; set; }
-        public string login { get; set; }
-        public string avatar_url { get; set; }
     }
 }

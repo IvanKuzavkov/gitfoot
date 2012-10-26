@@ -80,7 +80,7 @@ namespace gitfoot
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            ViewModelLocator.MainViewModel.LoadData();
+//            ViewModelLocator.MainViewModel.LoadData();
             // Ensure that application state is restored appropriately
             
         }

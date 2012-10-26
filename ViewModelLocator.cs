@@ -29,6 +29,14 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
             this._container = new ServiceContainer();
         }
 
+        public LoginViewModel LoginViewModel
+        {
+            get
+            {
+                return _container.Container.Resolve<LoginViewModel>();
+            }
+        }
+
         public MainViewModel MainViewModel
         {
             get

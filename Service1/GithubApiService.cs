@@ -49,7 +49,6 @@ namespace gitfoot.Service
 
             restClient.ExecuteAsync<User>(request, (response) =>
                 {
-
                     user = Observable.Return<User>(response.Data);
                 });
 

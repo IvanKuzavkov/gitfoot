@@ -123,12 +123,30 @@ namespace gitfoot.ViewModels
             service.UseCredentials("ivan-p", "githubPaSs1");
 
             this.NewsItems = new ObservableCollection<ItemViewModel>();
-            RepositItems = new ObservableCollection<ItemViewModel>();
 
+            User = Observable.Return(new User());
+
+            service.GetUser(User);
+
+            User.Subscribe(user =>
+                {
+                    user.Organizations.ForEach(org => service.GetReposForOrganization(org, RepositItems));
+                });
+
+            RepositItems = new ObservableCollection<ItemViewModel>();
             service.GetUserRepos(RepositItems);
 
             IssuesItems = new ObservableCollection<ItemViewModel>();
+            service.GetIssues(IssuesItems);
+
             _navigationService = navigationService;
+        }
+
+        private IObservable<User> _user;
+        public IObservable<User> User
+        {
+            get { return _user; }
+            set { _user = value; }
         }
 
         /// <summary>

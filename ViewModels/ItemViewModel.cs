@@ -33,6 +33,12 @@ namespace gitfoot.ViewModels
             Name = repo.name;
         }
 
+        public ItemViewModel(Issue issue)
+            : base(issue.title)
+        {
+            Name = issue.name;
+        }
+
         private string _name;
         public string Name
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,29 +12,142 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Threading;
+using BitTorrent.WP7.Extensions;
+using System.IO;
 using Microsoft.Phone.Reactive;
-
+using BitTorrent.WP7.Services;
+//using Microsoft.Practices.Prism.ViewModel;
 using gitfoot.Service;
+using gitfoot.Models;
 
-namespace gitfoot
+namespace gitfoot.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        INavigationService _navigationService;
+        private Uri imageUri;
+        public Uri ImageUri
+        {
+            get { return imageUri; }
+            set
+            {
+                if (imageUri == value)
+                    return;
+                imageUri = value;
+                bitmapImage = null;
+                NotifyPropertyChanged("PanoramaImage");
+            }
+        }
+
+        string DefaultImage = "http://octodex.github.com/images/stormtroopocat.jpg";
+        WeakReference<BitmapImage> bitmapImage;
+
+        public ImageSource PanoramaImage
+        {
+            get
+            {
+                if (bitmapImage != null)
+                {
+                    if (bitmapImage.IsAlive)
+                        return bitmapImage.Target;
+                }
+
+                if (imageUri != null)
+                    ThreadPool.QueueUserWorkItem(DownloadImage, imageUri);
+
+                return new BitmapImage(new Uri(DefaultImage, UriKind.Absolute));
+            }
+        }
+
+        void DownloadImage(object state)
+        {
+            HttpWebRequest request = WebRequest.CreateHttp(state as Uri);
+
+            Observable.FromAsyncPattern<WebResponse>(request.BeginGetResponse, request.EndGetResponse)()
+                    .Select(r =>
+                    {
+                        // Insert random sleep so that all images don't fire at once, impacting performance
+                        Thread.Sleep(new Random(BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0)).Next(1000));
+
+                        using (Stream stream = r.GetResponseStream())
+                        {
+                            return CopyStream(stream, (int)r.ContentLength);
+                        }
+                    })
+                //      .SubscribeOnDispatcher()
+                    .Subscribe(s =>
+                    {
+                        Deployment.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            BitmapImage bm = new BitmapImage();
+                            bm.SetSource(s);
+
+                            if (bitmapImage == null)
+                                bitmapImage = new WeakReference<BitmapImage>(bm);
+                            else
+                                bitmapImage.Target = bm;
+                            NotifyPropertyChanged("ImageSource");
+                        });
+                    });
+        }
+
+        const int MAX_COPY_CHUNK_SIZE = 5000;
+        static Stream CopyStream(Stream stream, int length)
+        {
+            Stream copy = new MemoryStream(length);
+
+            int chunkSize = Math.Min(length, MAX_COPY_CHUNK_SIZE);
+            byte[] buffer = new byte[chunkSize];
+            int amountRead = 0;
+
+            do
+            {
+                amountRead = stream.Read(buffer, 0, chunkSize);
+                copy.Write(buffer, 0, amountRead);
+            } while (amountRead == chunkSize);
+
+            copy.Seek(0, SeekOrigin.Begin);
+            return copy;
+        }
+
         public MainViewModel()
         {
-            this.Items = new ObservableCollection<ItemViewModel>();
+            this.NewsItems = new ObservableCollection<ItemViewModel>();
+        }
+
+        public MainViewModel(INavigationService navigationService)
+        {
+            GithubApiService service = new GithubApiService();
+            service.UseCredentials("ivan-p", "githubPaSs1");
+
+            this.NewsItems = new ObservableCollection<ItemViewModel>();
+            RepositItems = new ObservableCollection<ItemViewModel>();
+
+            service.GetUserRepos(RepositItems);
+
+            IssuesItems = new ObservableCollection<ItemViewModel>();
+            _navigationService = navigationService;
         }
 
         /// <summary>
         /// A collection for ItemViewModel objects.
         /// </summary>
-        public ObservableCollection<ItemViewModel> Items { get; private set; }
+        /// 
+        private ObservableCollection<ItemViewModel> _newsItems;
+
+        public ObservableCollection<ItemViewModel> NewsItems
+        {
+            get { return _newsItems; }
+            set { _newsItems = value; }
+        }
+        
+        public ObservableCollection<ItemViewModel> RepositItems { get; private set; }
+        public ObservableCollection<ItemViewModel> IssuesItems { get; private set; }
 
         private string _sampleProperty = "Sample Runtime Property Value";
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding
-        /// </summary>
-        /// <returns></returns>
+
         public string SampleProperty
         {
             get
@@ -57,47 +170,10 @@ namespace gitfoot
             private set;
         }
 
-        /// <summary>
-        /// Creates and adds a few ItemViewModel objects into the Items collection.
-        /// </summary>
         public void LoadData()
         {
-            // Sample data; replace with real data
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime one", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime two", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime three", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime four", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime five", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime six", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime seven", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime eight", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime nine", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime ten", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime eleven", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Habitant inceptos interdum lobortis nascetur pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime twelve", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Ultrices vehicula volutpat maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime thirteen", LineTwo = "Maecenas praesent accumsan bibendum", LineThree = "Maecenas praesent accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime fourteen", LineTwo = "Dictumst eleifend facilisi faucibus", LineThree = "Pharetra placerat pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime fifteen", LineTwo = "Habitant inceptos interdum lobortis", LineThree = "Accumsan bibendum dictumst eleifend facilisi faucibus habitant inceptos interdum lobortis nascetur pharetra placerat" });
-            this.Items.Add(new ItemViewModel() { LineOne = "runtime sixteen", LineTwo = "Nascetur pharetra placerat pulvinar", LineThree = "Pulvinar sagittis senectus sociosqu suscipit torquent ultrices vehicula volutpat maecenas praesent accumsan bibendum" });
-
-            {
-                GithubApiService service = new GithubApiService();
-                service.UseCredentials("ivan-p", "githubPaSs1");
-
-                service.CreateAuthorization().
-                    Subscribe((r) =>
-                    {
-                        string token = ((Models.AuthorizationResponse)r).token;
-                    }
-                    , (e) => 
-                    {
-                        string message = e.Message;
-                    }
-                );
-
-                
-            }
-
+            //Replace image url if needed
+            ImageUri = new Uri(DefaultImage, UriKind.Absolute);
             this.IsDataLoaded = true;
         }
 

@@ -15,25 +15,20 @@ namespace gitfoot
 {
     public class ItemViewModel : INotifyPropertyChanged
     {
-        private string _lineOne;
-        /// <summary>
-        /// Sample ViewModel property; this property is used in the view to display its value using a Binding.
-        /// </summary>
-        /// <returns></returns>
-        public string LineOne
+        public ItemViewModel()
         {
-            get
-            {
-                return _lineOne;
-            }
-            set
-            {
-                if (value != _lineOne)
-                {
-                    _lineOne = value;
-                    NotifyPropertyChanged("LineOne");
-                }
-            }
+        }
+
+        public ItemViewModel(BaseModel model)
+            : base(model.id.ToString())
+        {
+            Name = model.name;
+        }
+
+        public ItemViewModel(Repository repo)
+            : base(repo.full_name)
+        {
+            Name = repo.name;
         }
 
         private string _lineTwo;
@@ -51,8 +46,8 @@ namespace gitfoot
             {
                 if (value != _lineTwo)
                 {
-                    _lineTwo = value;
-                    NotifyPropertyChanged("LineTwo");
+                    _name = value;
+                    NotifyPropertyChanged("Name");
                 }
             }
         }
@@ -72,8 +67,8 @@ namespace gitfoot
             {
                 if (value != _lineThree)
                 {
-                    _lineThree = value;
-                    NotifyPropertyChanged("LineThree");
+                    _image = value;
+                    NotifyPropertyChanged("Image");
                 }
             }
         }

@@ -13,49 +13,23 @@ using System.Collections.Generic;
 
 namespace gitfoot.Models
 {
-    [DataContract]
-    public partial class LoginRequest
+    public class User
     {
-        [DataMember]
-        public string name { get; set; }
-
-        [DataMember]
-        public string password { get; set; }
-    }
-
-    [DataContract]
-    public partial class LoginToken
-    {
-        [DataMember]
-        public string token { get; set; }
-    }
-
-    [DataContract]
-    public partial class AuthorizationRequest
-    {
-        [DataMember]
-        public List<string> scopes { get; set; }
-
-        [DataMember]
-        public string note { get; set; }
-
-        [DataMember]
-        public string note_url { get; set; }
-    }
-
-    [DataContract]
-    public partial class AuthorizationResponse
-    {
-        [DataMember]
         public int id { get; set; }
+        public string login { get; set; }
+        public string avatar_url { get; set; }
+        public string name { get; set; }
+        public string email { get; set; }
+        public int public_repos { get; set; }
+    }
 
-        [DataMember]
+    public class Repository : BaseModel
+    {
+//        public int id { get; set; }
         public string url { get; set; }
-
-        [DataMember]
-        public List<string> scopes { get; set; }
-
-        [DataMember]
-        public string token { get; set; }
+//        public string name { get; set; }
+        public string full_name { get; set; }
+        public string description { get; set; }
+        public int open_issues { get; set; }
     }
 }

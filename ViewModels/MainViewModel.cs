@@ -28,6 +28,7 @@ namespace gitfoot.ViewModels
     {
         INavigationService _navigationService;
         GithubApiService GHService { get; set; }
+        OctocatsService OctocatService { get; set; }
         public INotificationController NotificationController { get; set; }
 
         private Uri imageUri;
@@ -62,6 +63,10 @@ namespace gitfoot.ViewModels
 
                 return new BitmapImage(new Uri(DefaultImage, UriKind.Absolute));
             }
+            set
+            {
+                string s = "12";
+            }
         }
 
         void DownloadImage(object state)
@@ -79,7 +84,6 @@ namespace gitfoot.ViewModels
                             return CopyStream(stream, (int)r.ContentLength);
                         }
                     })
-                //      .SubscribeOnDispatcher()
                     .Subscribe(s =>
                     {
                         Deployment.Current.Dispatcher.BeginInvoke(() =>
@@ -120,10 +124,11 @@ namespace gitfoot.ViewModels
             this.NewsItems = new ObservableCollection<ItemViewModel>();
         }
 
-        public MainViewModel(INavigationService navigationService, GithubApiService service, INotificationController notController)
+        public MainViewModel(INavigationService navigationService, GithubApiService ghSvc, INotificationController notController, OctocatsService octocatSvc)
         {
             NotificationController = notController;
-            GHService = service;
+            GHService = ghSvc;
+            OctocatService = octocatSvc;
  
             this.NewsItems = new ObservableCollection<ItemViewModel>();
 
@@ -185,7 +190,8 @@ namespace gitfoot.ViewModels
         public void LoadData()
         {
             //Replace image url if needed
-            ImageUri = new Uri(DefaultImage, UriKind.Absolute);
+ //           ImageUri = new Uri(DefaultImage, UriKind.Absolute);
+            ImageUri = new Uri(OctocatService.CurrentOctocat);
             this.IsDataLoaded = true;
         }
 

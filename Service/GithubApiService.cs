@@ -62,8 +62,6 @@ namespace gitfoot.Service
         {
             var request = new RestRequest("user/issues", Method.GET);
 
- //           IssuesRequest isReq = new IssuesRequest() { filter = "all" };
-
             request.RequestFormat = DataFormat.Json;
             request.AddParameter("filter", "all");
 
@@ -88,7 +86,7 @@ namespace gitfoot.Service
                 });
         }
 
-        public static void GetReposForOrganization(Organization org/*, ObservableCollection<ItemViewModel> repos*/)
+        public static void GetReposForOrganization(Organization org)
         {
             var request = new RestRequest(string.Format("orgs/{0}/repos", org.login), Method.GET);
 
@@ -97,13 +95,27 @@ namespace gitfoot.Service
                     var t = App.Current.Resources["ViewModelLocator"];
                     var repos = (t as ViewModelLocator).MainViewModel.RepositItems;
 
-                    response.Data.ForEach(repo => repos.Add(new ItemViewModel(repo)));
+                    response.Data.ForEach(repo =>
+                        {
+                            repos.Add(new ItemViewModel(repo));
+                            GetIssuesForRepo(repo);
+                        });
+
+                   
                 });
         }
 
         public static void GetIssuesForRepo(Repository repo)
         {
-//           var request = new RestRequest(string.Format("repos/{0}/{1}/issues
+            var request = new RestRequest(string.Format("repos/{0}/{1}/issues", repo.owner.login, repo.name), Method.GET);
+
+            restClient.ExecuteAsync<List<Issue>>(request, response =>
+                {
+                    var t = App.Current.Resources["ViewModelLocator"];
+                    var issues = (t as ViewModelLocator).MainViewModel.IssuesItems;
+
+                    response.Data.ForEach(issue => issues.Add(new ItemViewModel(issue)));
+                });
         }
 
     }

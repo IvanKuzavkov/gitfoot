@@ -70,19 +70,30 @@ namespace gitfoot.ViewModels
         }
         
 
-        public LoginViewModel(INavigationService navigateService, GithubApiService ghservice, INotificationController notController)
+        public LoginViewModel(INavigationService navigateService, GithubApiService ghservice, INotificationController notController, ICacheManager cache)
         {
             IsLogin = false;
             NavigationService = navigateService;
             GHService = ghservice;
             NotificationController = notController;
+            User = cache.Get<string>("username");
+            Password = cache.Get<string>("password");
 
             _loginCommand = new DelegateCommand(() =>
             {
+                
                 NotificationController.SplashScreen.IsVisible = true;
+                cache.Add("username", User);
+                cache.Add("password", Password);
                 GHService.UseCredentials(User, Password);
                 NavigationService.Navigate(AppPages.MainPage);
             });
+        }
+
+        public void Init(string username = null, string password = null)
+        {
+            if (User != null && Password != null && _loginCommand.CanExecute())
+                _loginCommand.Execute();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

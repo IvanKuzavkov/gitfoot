@@ -20,7 +20,7 @@ namespace gitfoot.ViewModels
         private INavigationService NavigationService { get; set; }
         public INotificationController NotificationController { get; set; }
 
-        public AppViewModel(INavigationService navigateService, GithubApiService ghservice, INotificationController notController)
+        public AppViewModel(INavigationService navigateService, GithubApiService ghservice, INotificationController notController, ICacheManager cache)
         {
             NavigationService = navigateService;
             GHService = ghservice;
@@ -29,7 +29,6 @@ namespace gitfoot.ViewModels
 
             //Autologin can be implemented here
             NavigationService.Navigate(AppPages.LoginPage);
-
         }
     }
 }

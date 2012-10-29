@@ -33,6 +33,7 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
             Container.Register<gitfoot.Service.GithubApiService>(_ => new gitfoot.Service.GithubApiService());
             Container.Register<gitfoot.Service.OctocatsService>(_ => new gitfoot.Service.OctocatsService());
             Container.Register<INotificationController>(DefaultNotificationController.Instance);
+            Container.Register<ICacheManager>(IsolatedStorageCacheManager.Instance);
 
 
  //           Container.Register<ICacheManager>(IsolatedStorageCacheManager.Instance);
@@ -40,7 +41,8 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
             Container.Register<AppViewModel>(c => new AppViewModel(
                                            c.Resolve<INavigationService>(),
                                            c.Resolve<gitfoot.Service.GithubApiService>(),
-                                           c.Resolve<INotificationController>()))
+                                           c.Resolve<INotificationController>(),
+                                           c.Resolve<ICacheManager>()))
                                            .ReusedWithin(ReuseScope.Container);
 
 
@@ -54,7 +56,8 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
             Container.Register<LoginViewModel>(c => new LoginViewModel(
                                            c.Resolve<INavigationService>(),
                                            c.Resolve<gitfoot.Service.GithubApiService>(),
-                                           c.Resolve<INotificationController>()))
+                                           c.Resolve<INotificationController>(),
+                                           c.Resolve<ICacheManager>()))
                                            .ReusedWithin(ReuseScope.Container);
 
         }

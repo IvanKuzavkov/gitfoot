@@ -58,6 +58,7 @@ namespace gitfoot
                 while (NavigationService.RemoveBackEntry() != null)
                 { }
             }
+            ViewModel.Init();
         }
 
         private void LoginBtn_Click(object sender, System.EventArgs e)

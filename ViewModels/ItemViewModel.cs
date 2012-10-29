@@ -34,9 +34,9 @@ namespace gitfoot.ViewModels
         }
 
         public ItemViewModel(Issue issue)
-            : base(issue.title)
+            : base(issue.body)
         {
-            Name = issue.name;
+            Name = issue.title;
         }
 
         private string _name;

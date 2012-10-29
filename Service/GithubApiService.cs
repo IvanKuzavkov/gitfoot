@@ -60,11 +60,15 @@ namespace gitfoot.Service
 
         public void GetIssues(ObservableCollection<ItemViewModel> issues)
         {
-            var request = new RestRequest("issues", Method.GET);
+            var request = new RestRequest("user/issues", Method.GET);
+
+ //           IssuesRequest isReq = new IssuesRequest() { filter = "all" };
+
+            request.RequestFormat = DataFormat.Json;
+            request.AddParameter("filter", "all");
 
             restClient.ExecuteAsync<List<Issue>>(request, response =>
                 {
-//                    string s = response.Content;
                     response.Data.ForEach(issue => issues.Add(new ItemViewModel(issue)));
                 });
         }
@@ -88,7 +92,6 @@ namespace gitfoot.Service
         {
             var request = new RestRequest(string.Format("orgs/{0}/repos", org.login), Method.GET);
 
-
             restClient.ExecuteAsync<List<Repository>>(request, response =>
                 {
                     var t = App.Current.Resources["ViewModelLocator"];
@@ -98,9 +101,9 @@ namespace gitfoot.Service
                 });
         }
 
-        public void GetIssuesForRepos(IEnumerable<Repository> repos)
+        public static void GetIssuesForRepo(Repository repo)
         {
-
+//           var request = new RestRequest(string.Format("repos/{0}/{1}/issues
         }
 
     }

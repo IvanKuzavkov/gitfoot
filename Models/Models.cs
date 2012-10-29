@@ -45,9 +45,19 @@ namespace gitfoot.Models
         public int number { get; set; }
         public string title { get; set; }
         public int comments { get; set; }
+        public string body { get; set; }
     }
 
     public class Organization : BaseOwner
     {
+    }
+
+    public class IssuesRequest
+    {
+        public string filter { get; set; }
+        public string state { get; set; }
+        public string labels { get; set; }
+        public string direction { get; set; }
+        public string since { get; set; }
     }
 }

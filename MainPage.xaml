@@ -1,4 +1,4 @@
-<phone:PhoneApplicationPage
+﻿<phone:PhoneApplicationPage
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:local="clr-namespace:gitfoot" x:Name="phoneApplicationPage" 
     x:Class="gitfoot.MainPage" 
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728"
     SupportedOrientations="Portrait"  Orientation="Portrait"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
     shell:SystemTray.IsVisible="False">
@@ -22,7 +22,15 @@
 	<phone:PhoneApplicationPage.Foreground>
 		<StaticResource ResourceKey="PhoneForegroundBrush"/>
 	</phone:PhoneApplicationPage.Foreground>
-	
+
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+             <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="Logout" Click="ApplicationBarMenuItem_Click"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
  
@@ -34,6 +42,11 @@
  
             <!--Panorama item one-->
             <controls:PanoramaItem>
+            	<ListBox FontSize="48" SelectionChanged="ListBox_SelectionChanged">
+            		<ListBoxItem Content="news" FontSize="64"/>
+            		<ListBoxItem Content="repositories" FontSize="64"/>
+            		<ListBoxItem Content="issues" FontSize="64"/>
+            	</ListBox>
                 <!--Double line list with text wrapping-->
                
             </controls:PanoramaItem>
@@ -64,7 +77,6 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,17">
                                 <!--Replace rectangle with image-->
-                                <Rectangle Height="100" Width="100" Fill="#FFE5001b" Margin="12,0,9,0"/>
                                 <StackPanel Width="311">                                    
                                     <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}" DataContext="{Binding}"/>
                                     <TextBlock Text="{Binding Id}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}" DataContext="{Binding}"/>

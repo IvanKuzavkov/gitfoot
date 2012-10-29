@@ -50,7 +50,8 @@ namespace BitTorrent.WP7.TorrentRemote.App.Services
                                            c.Resolve<INavigationService>(),
                                            c.Resolve<gitfoot.Service.GithubApiService>(),
                                            c.Resolve<INotificationController>(),
-                                           c.Resolve<gitfoot.Service.OctocatsService>()))
+                                           c.Resolve<gitfoot.Service.OctocatsService>(),
+                                           c.Resolve<ICacheManager>()))
                                            .ReusedWithin(ReuseScope.Container);
 
             Container.Register<LoginViewModel>(c => new LoginViewModel(

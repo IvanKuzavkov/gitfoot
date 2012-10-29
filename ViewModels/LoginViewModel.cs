@@ -22,6 +22,7 @@ namespace gitfoot.ViewModels
         private GithubApiService GHService { get; set; }
         private INavigationService NavigationService { get; set; }
         public INotificationController NotificationController { get; set; }
+        ICacheManager _cache;
 
         private bool _isLogin;
 
@@ -76,8 +77,7 @@ namespace gitfoot.ViewModels
             NavigationService = navigateService;
             GHService = ghservice;
             NotificationController = notController;
-            User = cache.Get<string>("username");
-            Password = cache.Get<string>("password");
+            _cache = cache;
 
             _loginCommand = new DelegateCommand(() =>
             {
@@ -92,6 +92,8 @@ namespace gitfoot.ViewModels
 
         public void Init(string username = null, string password = null)
         {
+            User = _cache.Get<string>("username");
+            Password = _cache.Get<string>("password");
             if (User != null && Password != null && _loginCommand.CanExecute())
                 _loginCommand.Execute();
         }

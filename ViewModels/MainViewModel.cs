@@ -30,6 +30,7 @@ namespace gitfoot.ViewModels
         GithubApiService GHService { get; set; }
         OctocatsService OctocatService { get; set; }
         public INotificationController NotificationController { get; set; }
+        public event EventHandler onImageChanged;
 
         private Uri imageUri;
         public Uri ImageUri
@@ -41,7 +42,8 @@ namespace gitfoot.ViewModels
                     return;
                 imageUri = value;
                 bitmapImage = null;
-                NotifyPropertyChanged("PanoramaImage");
+                if (onImageChanged != null)
+                    onImageChanged(this, null);
             }
         }
 
@@ -95,7 +97,8 @@ namespace gitfoot.ViewModels
                                 bitmapImage = new WeakReference<BitmapImage>(bm);
                             else
                                 bitmapImage.Target = bm;
-                            NotifyPropertyChanged("ImageSource");
+                            if (onImageChanged != null)
+                                onImageChanged(this, null);
                         });
                     });
         }

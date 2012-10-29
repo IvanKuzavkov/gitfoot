@@ -32,8 +32,15 @@ namespace gitfoot
             PhoneApplicationService.Current.Activated += new EventHandler<ActivatedEventArgs>(Current_Activated);
 
             (pamora.Background as ImageBrush).ImageSource = (DataContext as MainViewModel).PanoramaImage;
-            (pamora.Background as ImageBrush).Opacity = 0.4;
+            (pamora.Background as ImageBrush).Opacity = 0.2;
             this.Loaded += new RoutedEventHandler(MainPage_Loaded);
+            ViewModel.onImageChanged += new EventHandler(ViewModel_onImageChanged);
+        }
+
+        void ViewModel_onImageChanged(object sender, EventArgs e)
+        {
+            (pamora.Background as ImageBrush).ImageSource = (DataContext as MainViewModel).PanoramaImage;
+            (pamora.Background as ImageBrush).Opacity = 0.2;
         }
 
         void Current_Activated(object sender, ActivatedEventArgs e)

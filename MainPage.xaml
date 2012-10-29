@@ -95,7 +95,7 @@
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,17">
                                 <!--Replace rectangle with image-->
                                 <StackPanel Width="311">                                    
-                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}" DataContext="{Binding}"/>
+                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}" DataContext="{Binding}" FontSize="32"/>
                                     <TextBlock Text="{Binding Id}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}" DataContext="{Binding}"/>
                                 </StackPanel>
                             </StackPanel>

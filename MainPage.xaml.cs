@@ -61,14 +61,41 @@ namespace gitfoot
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ViewModel.NotificationController.SplashScreen.IsVisible = false;
-            if (e.NavigationMode == NavigationMode.New && e.IsNavigationInitiator)
+            string strItemIndex;
+            if (NavigationContext.QueryString.TryGetValue("goto", out strItemIndex))
             {
-                while (NavigationService.RemoveBackEntry() != null)
-                { }
+                pamora.DefaultItem = pamora.Items[Convert.ToInt32(strItemIndex)];
+                if (e.NavigationMode == NavigationMode.New && e.IsNavigationInitiator)
+                {
+                    while (NavigationService.RemoveBackEntry() != null)
+                    { }
+                }
             }
+            else
+            {
+                ViewModel.NotificationController.SplashScreen.IsVisible = false;
+                if (e.NavigationMode == NavigationMode.New && e.IsNavigationInitiator)
+                {
+                    while (NavigationService.RemoveBackEntry() != null)
+                    { }
+                }
+                ViewModel.Init();
+            }
+        }
 
-            ViewModel.Init();
+        private void ListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if ((sender as ListBox).SelectedIndex != -1)
+            {
+                string s = String.Format("/MainPage.xaml?goto={0}", (sender as ListBox).SelectedIndex + 1);
+                NavigationService.Navigate(new Uri(s, UriKind.Relative));
+            }
+        }
+
+        private void ApplicationBarMenuItem_Click(object sender, System.EventArgs e)
+        {
+            ViewModel.Logout();
+            NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.Relative));
         }
     }
 }

@@ -27,6 +27,7 @@ namespace gitfoot.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         INavigationService _navigationService;
+        ICacheManager _settings;
         GithubApiService GHService { get; set; }
         OctocatsService OctocatService { get; set; }
         public INotificationController NotificationController { get; set; }
@@ -127,11 +128,12 @@ namespace gitfoot.ViewModels
             this.NewsItems = new ObservableCollection<ItemViewModel>();
         }
 
-        public MainViewModel(INavigationService navigationService, GithubApiService ghSvc, INotificationController notController, OctocatsService octocatSvc)
+        public MainViewModel(INavigationService navigationService, GithubApiService ghSvc, INotificationController notController, OctocatsService octocatSvc, ICacheManager cache)
         {
             NotificationController = notController;
             GHService = ghSvc;
             OctocatService = octocatSvc;
+            _settings = cache;
  
             this.NewsItems = new ObservableCollection<ItemViewModel>();
 
@@ -207,6 +209,12 @@ namespace gitfoot.ViewModels
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public void Logout()
+        {
+            _settings.Remove("username");
+            _settings.Remove("password");
         }
     }
 }

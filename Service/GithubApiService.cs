@@ -5,6 +5,8 @@ using gitfoot.Models;
 using gitfoot.ViewModels;
 using Microsoft.Phone.Reactive;
 using RestSharp;
+using BitTorrent.WP7.TorrentRemote.App.Services;
+
 
 namespace gitfoot.Service
 {
@@ -74,15 +76,24 @@ namespace gitfoot.Service
             restClient.ExecuteAsync<List<Organization>>(request, response =>
                 {
                     user.Organizations = response.Data;
+
+                    response.Data.ForEach(org =>
+                        {
+                            GetReposForOrganization(org);
+                        });
                 });
         }
 
-        public void GetReposForOrganization(Organization org, ObservableCollection<ItemViewModel> repos)
+        public static void GetReposForOrganization(Organization org/*, ObservableCollection<ItemViewModel> repos*/)
         {
             var request = new RestRequest(string.Format("orgs/{0}/repos", org.login), Method.GET);
 
+
             restClient.ExecuteAsync<List<Repository>>(request, response =>
                 {
+                    var t = App.Current.Resources["ViewModelLocator"];
+                    var repos = (t as ViewModelLocator).MainViewModel.RepositItems;
+
                     response.Data.ForEach(repo => repos.Add(new ItemViewModel(repo)));
                 });
         }

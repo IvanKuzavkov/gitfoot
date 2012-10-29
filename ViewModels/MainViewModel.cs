@@ -135,9 +135,7 @@ namespace gitfoot.ViewModels
  
             this.NewsItems = new ObservableCollection<ItemViewModel>();
 
-//            User = Observable.Return(new User());
 
-//            GHService.GetUser(User);
 
 /*            User.Subscribe(user =>
                 {
@@ -160,6 +158,9 @@ namespace gitfoot.ViewModels
 
             IssuesItems = new ObservableCollection<ItemViewModel>();
             GHService.GetIssues(IssuesItems);
+
+            User = Observable.Return(new User());
+            GHService.GetUser(User);
         }
 
         private IObservable<User> _user;
